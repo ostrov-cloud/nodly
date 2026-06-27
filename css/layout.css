@@ -43,7 +43,7 @@ body:has(#sidebar.sidebar-hidden) #main {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 14px 14px 10px;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 14px 10px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -130,12 +130,12 @@ body:has(#sidebar.sidebar-hidden) #main {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 0 14px;
+  padding: env(safe-area-inset-top, 0px) 14px 0;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
   flex-shrink: 0;
   flex-wrap: wrap;
-  min-height: var(--topbar-h);
+  min-height: calc(var(--topbar-h) + env(safe-area-inset-top, 0px));
   height: auto;
   overflow: visible;
 }
@@ -433,7 +433,7 @@ body:has(#sidebar.sidebar-hidden) #main {
 #btn-save {
   position: absolute;
   right: 20px;
-  bottom: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   padding: 14px 28px;
   color: #fff;
   background: var(--blue);
