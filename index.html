@@ -37,7 +37,7 @@
       <line x1="8.4" y1="12.5" x2="13.6" y2="15.5" stroke="#2F7FD1" stroke-width="1.4" stroke-linecap="round"/>
     </svg>
     <span class="logo-text">Nodly</span>
-    <span id="app-version">v5-13</span>
+    <span id="app-version">v5-12</span>
   </div>
 
   <!-- Кнопка додати -->
@@ -102,9 +102,6 @@
         autocomplete="off"
       />
       <div class="topbar-actions"></div>
-      <button class="btn-tool btn-help" onclick="App.toggleHelp()" title="Довідка" aria-label="Відкрити довідку">
-        <i class="ti ti-question-mark" aria-hidden="true"></i>
-      </button>
     </header>
 
     <!-- Тулбар вузлів -->
@@ -182,6 +179,11 @@
         </section>
       </div>
     </div>
+
+    <!-- Кнопка довідки -->
+    <button id="btn-help" onclick="App.toggleHelp()" title="Довідка" aria-label="Відкрити довідку">
+      <i class="ti ti-question-mark" aria-hidden="true"></i>
+    </button>
 
     <!-- Канвас -->
     <div id="canvas" role="region" aria-label="Область вузлів">

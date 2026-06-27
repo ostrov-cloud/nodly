@@ -812,3 +812,27 @@ body:has(#sidebar.sidebar-hidden) #main {
 }
 .help-port.out { background: var(--green); }
 .help-port.in  { background: var(--blue); }
+
+#btn-help {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(100,100,120,0.72);
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(0,0,0,.18);
+  z-index: 10;
+  border: none;
+  cursor: pointer;
+  transition: background .15s, transform .12s;
+}
+#btn-help:hover, #btn-help:active {
+  background: rgba(100,100,120,0.95);
+  transform: scale(1.08);
+}
