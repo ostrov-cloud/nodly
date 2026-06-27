@@ -162,8 +162,8 @@
   width: 100%;
   border-radius: var(--radius-sm);
   background: #000;
-  max-height: 260px;
-  object-fit: cover;
+  height: 340px;
+  object-fit: contain;
 }
 
 .camera-controls {
@@ -214,9 +214,9 @@
 /* ── Прев'ю фото ── */
 #photo-preview img {
   width: 100%;
+  height: 340px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  max-height: 260px;
   object-fit: contain;
   background: var(--surface-2);
 }

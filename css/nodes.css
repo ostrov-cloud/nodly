@@ -52,7 +52,7 @@
   line-height: 1;
 }
 
-.node-label {
+.node-label-static {
   flex: 1;
   min-width: 0;
   font-size: var(--text-sm);
@@ -61,13 +61,13 @@
   background: transparent;
   border: none;
   outline: none;
-  cursor: text;
+  pointer-events: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.node-label::placeholder {
+.node-label-static::placeholder {
   color: var(--text-3);
   font-weight: 400;
 }
@@ -596,7 +596,7 @@
   flex-shrink: 0;
 }
 
-.node-label {
+.node-label-static {
   font-size: 15px !important;
   font-weight: 600 !important;
 }

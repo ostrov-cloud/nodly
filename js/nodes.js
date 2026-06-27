@@ -164,12 +164,7 @@ const Nodes = (() => {
       <div class="node-header${n.type === 'note' ? ' note-header' : ''}">
         <i class="ti ${t.icon} node-header-icon node-header-icon-lg" aria-hidden="true"
           style="color:${t.color}"></i>
-        <input class="node-label" type="text"
-          value="${esc(n.customLabel)}"
-          placeholder="${t.label}"
-          onmousedown="event.stopPropagation()"
-          onclick="event.stopPropagation()"
-          oninput="Nodes.onLabelInput('${id}', this.value)"/>
+        <div class="node-label-static">${t.label}</div>
         <div class="node-header-actions">
           <select class="node-scale-select" onchange="Nodes.setScale('${id}', Number(this.value))" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation()">
             <option value="0.75" ${(n.scale||1)===0.75?'selected':''}>S</option>
