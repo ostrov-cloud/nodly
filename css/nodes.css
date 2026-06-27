@@ -1,0 +1,749 @@
+/* ═══════════════════════════════════════
+   nodes.css — Вузли, порти, з'єднання
+   Nodly
+════════════════════════════════════════ */
+
+/* ── Базовий вузол ── */
+.node {
+  position: absolute;
+  min-width: var(--node-min-w);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+  cursor: grab;
+  z-index: 1;
+  transition: box-shadow var(--duration);
+}
+
+.node:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--border-2);
+}
+
+.node:active {
+  cursor: grabbing;
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+}
+
+.node.note {
+  min-width: 190px;
+}
+
+/* ── Заголовок вузла ── */
+.node-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 9px 6px;
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.node-header.note-header {
+  background: var(--amber-light);
+}
+
+.node-header-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.node-label {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.node-label::placeholder {
+  color: var(--text-3);
+  font-weight: 400;
+}
+
+/* ── Кнопки заголовка ── */
+.node-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.node-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 14px;
+  color: var(--text-3);
+  border-radius: 4px;
+  transition: color var(--duration), background var(--duration);
+}
+
+.node-btn:hover {
+  color: var(--text-2);
+  background: var(--surface-2);
+}
+
+.node-btn.close:hover {
+  color: var(--red);
+  background: var(--red-light);
+}
+
+.node-btn.photo-active {
+  color: var(--blue);
+}
+
+/* ── Тіло вузла ── */
+.node-body {
+  padding: 9px 10px;
+}
+
+/* ── Рядки у вузлі ── */
+.node-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 7px;
+}
+
+.node-row:last-child {
+  margin-bottom: 0;
+}
+
+.node-row.col {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+}
+
+.node-row.sep {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 3px;
+}
+
+/* ── Порти ── */
+.port {
+  width: var(--port-size);
+  height: var(--port-size);
+  border-radius: 50%;
+  border: 2.5px solid;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform var(--duration), background var(--duration);
+  position: relative;
+}
+
+.port:hover {
+  transform: scale(1.35);
+}
+
+.port-in {
+  border-color: var(--blue);
+  background: var(--surface);
+}
+
+.port-out {
+  border-color: var(--green);
+  background: var(--surface);
+}
+
+.port-in.connected {
+  background: var(--blue);
+}
+
+.port-out.connected {
+  background: var(--green);
+}
+
+/* ── Підписи портів ── */
+.port-label {
+  font-size: var(--text-sm);
+  color: var(--text-2);
+  line-height: 1;
+}
+
+.port-value {
+  font-size: var(--text-sm);
+  color: var(--text-3);
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Поля введення у вузлі ── */
+.node-input {
+  font-size: var(--text-md);
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  width: 100%;
+  transition: border-color var(--duration), background var(--duration);
+}
+
+.node-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  background: var(--surface);
+}
+
+.node-input.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+}
+
+/* ── Підказка формули ── */
+.formula-hint {
+  font-size: var(--text-sm);
+  color: var(--text-2);
+  padding: 2px 2px;
+  line-height: 1.5;
+}
+
+/* ── Нода ФОРМУЛИ: fnd-* ── */
+
+/* Блок великого вводу формули */
+.fnd-formula-area {
+  padding: 8px 10px 6px;
+  box-sizing: border-box;
+}
+.fnd-formula-big {
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  border-radius: 0;
+  color: var(--text);
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 2px 4px 6px;
+  outline: none;
+  caret-color: var(--green);
+  min-width: 0;
+}
+.fnd-formula-big:focus {
+  border-bottom-color: var(--green);
+}
+.fnd-formula-big::placeholder {
+  color: var(--text-3);
+  font-weight: 400;
+}
+
+/* Нижній ряд: змінні + вихід */
+.fnd-bottom-row {
+  display: flex;
+  align-items: stretch;
+  border-top: 1px solid var(--border);
+  min-height: 60px;
+  padding-bottom: 22px; /* місце для порту 44px (половина = 22px) */
+  overflow: visible;
+}
+
+/* Один слот змінної */
+.fnd-slot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 6px 10px;
+  border-right: 1px solid var(--border);
+  gap: 8px;
+  min-width: 56px;
+}
+.fnd-slot-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--green);
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+/* Порт змінної: великий (44px), виступає за нижній край ноди */
+.fnd-slot .port-in {
+  flex-shrink: 0;
+  margin-left: 0 !important;   /* скидаємо глобальний -42px */
+  margin-bottom: -22px !important; /* половина 44px порту */
+}
+
+/* Вихідний порт: великий, виступає за нижній край */
+.fnd-output-slot .port-out {
+  flex-shrink: 0;
+  margin-right: 0 !important;  /* скидаємо глобальний -42px */
+  margin-bottom: -22px !important;
+}
+.fnd-output-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 8px 8px;
+  min-width: 56px;
+  gap: 4px;
+  border-left: 1px solid var(--border);
+}
+.fnd-eq-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  line-height: 1;
+}
+.fnd-res {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--amber);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Результат ── */
+.node-result {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 48px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+}
+
+.node-result.output {
+  font-size: 21px;
+  color: var(--amber);
+}
+
+/* ── Нотатка ── */
+.note-textarea {
+  width: 100%;
+  font-size: var(--text-md);
+  line-height: 1.65;
+  min-height: 80px;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font);
+  resize: none;
+}
+
+.note-textarea::placeholder {
+  color: var(--text-3);
+}
+
+/* ── Фото панель ── */
+.node-photo-panel {
+  border-top: 1px solid var(--border);
+  padding: 9px 10px;
+}
+
+.photo-thumb {
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px;
+  border: 1.5px dashed var(--border-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--duration), background var(--duration);
+}
+
+.photo-placeholder:hover {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+
+.photo-placeholder i {
+  font-size: 22px;
+  color: var(--text-3);
+}
+
+.photo-placeholder span {
+  font-size: var(--text-xs);
+  color: var(--text-3);
+}
+
+.photo-panel-actions {
+  display: flex;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+/* ── SVG з'єднання ── */
+.conn-line {
+  pointer-events: none;
+}
+
+
+/* ── Фото всередині ноди (у нормальному потоці, без позиціонування) ── */
+.node-photo-top {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  cursor: zoom-in;
+}
+
+.conn-line-temp {
+  pointer-events: none;
+}
+
+/* ── Version v4-2 overrides ── */
+#app-version {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  background: var(--blue-light);
+  border: 1px solid var(--blue);
+  border-radius: 999px;
+}
+
+.port {
+  width: 34px;
+  height: 34px;
+  border-width: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.14);
+  z-index: 3;
+}
+
+.port:hover {
+  transform: scale(1.12);
+}
+
+.node-row {
+  position: relative;
+}
+
+.port-in {
+  margin-left: -27px;
+  background: var(--surface);
+}
+
+.port-out {
+  margin-right: -27px;
+  background: var(--surface);
+}
+
+
+/* ── Node scale + mobile ports v5-0 ── */
+.node-scale-row { display:flex; gap:2px; margin-right:4px; }
+.node-scale-btn { font-size:9px; padding:2px 4px; border-radius:4px; color:var(--text-3); }
+.node-scale-btn.active { color:#fff; background:var(--blue); }
+.out-label { margin-left:auto; padding-right:6px; }
+.node { transform-origin: 0 0; }
+#crop-box { width:min(78vw,360px); aspect-ratio:1/1; overflow:hidden; margin:auto; border-radius:12px; background:#111; position:relative; }
+#crop-img { position:absolute; top:50%; left:50%; width:auto; height:auto; max-width:none; max-height:none; transform-origin:center center; user-select:none; -webkit-user-drag:none; }
+#crop-zoom { width:100%; margin-top:12px; }
+
+
+/* ── v5-1 mobile interaction fixes ── */
+.node {
+  touch-action: none;
+  min-width: 220px;
+}
+
+.node-header {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.node-header-actions {
+  gap: 5px;
+}
+
+.node-scale-row {
+  order: 3;
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px !important;
+  margin: 6px 0 0 !important;
+}
+
+.node-scale-btn {
+  min-height: 32px;
+  padding: 7px 6px !important;
+  font-size: 12px !important;
+  font-weight: 700;
+  border-radius: 8px !important;
+  background: var(--surface-2);
+  color: var(--text-2) !important;
+}
+
+.node-scale-btn.active {
+  color: #fff !important;
+  background: var(--blue) !important;
+}
+
+.number-row {
+  padding-right: 20px;
+}
+
+.number-input {
+  width: 92px !important;
+}
+
+.out-label {
+  margin-left: auto !important;
+  padding-right: 10px !important;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.port {
+  width: 44px !important;
+  height: 44px !important;
+  border-width: 5px !important;
+  touch-action: none;
+  z-index: 8;
+}
+
+.port-out {
+  margin-right: -42px !important;
+}
+
+.port-in {
+  margin-left: -42px !important;
+}
+
+
+/* ── v5-2 node action buttons + crop ── */
+.node-btn {
+  min-width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  background: var(--surface-2);
+  font-size: 16px !important;
+}
+
+.node-btn.photo-active {
+  color: #fff !important;
+  background: var(--blue) !important;
+}
+
+.node-btn.close:hover,
+.node-btn.close:active {
+  color: #fff !important;
+  background: var(--red) !important;
+}
+
+#crop-box {
+  position: relative;
+  touch-action: none;
+  cursor: grab;
+}
+
+#crop-box:active {
+  cursor: grabbing;
+}
+
+#crop-img {
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+#crop-frame {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(255,255,255,.95);
+  box-shadow: inset 0 0 0 9999px rgba(0,0,0,.08);
+  pointer-events: none;
+}
+
+
+/* ── v5-3 unified node design ── */
+
+/* header */
+.node-header {
+  padding: 10px 12px 8px !important;
+  gap: 8px !important;
+}
+
+.node-header-icon-lg {
+  font-size: 18px !important;
+  flex-shrink: 0;
+}
+
+.node-label {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.node-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px !important;
+  margin-left: auto;
+}
+
+/* scale dropdown */
+.node-scale-select {
+  height: 36px;
+  padding: 0 8px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  min-width: 52px;
+}
+
+.node-scale-select:focus {
+  border-color: var(--blue);
+}
+
+/* action buttons */
+.node-btn {
+  min-width: 34px !important;
+  height: 34px !important;
+  border-radius: 8px !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--border);
+  font-size: 17px !important;
+  color: var(--text-2) !important;
+}
+
+.node-btn.photo-active {
+  background: var(--blue) !important;
+  border-color: var(--blue) !important;
+  color: #fff !important;
+}
+
+.node-btn.close {
+  background: var(--surface-2) !important;
+  border-color: var(--border) !important;
+  color: var(--text-3) !important;
+}
+
+.node-btn.close:hover,
+.node-btn.close:active {
+  background: var(--red) !important;
+  border-color: var(--red) !important;
+  color: #fff !important;
+}
+
+/* node body */
+.node-body {
+  padding: 11px 12px !important;
+}
+
+.node-row {
+  gap: 9px !important;
+  margin-bottom: 9px !important;
+  min-height: 36px;
+}
+
+.port-label {
+  font-size: var(--text-sm) !important;
+  font-weight: 500;
+  color: var(--text-2) !important;
+}
+
+.out-label {
+  font-size: var(--text-sm) !important;
+  font-weight: 500;
+  padding-right: 10px !important;
+}
+
+.node-input {
+  font-size: 16px !important;
+  padding: 7px 10px !important;
+  border-radius: 9px !important;
+  height: 40px;
+}
+
+.number-input {
+  min-width: 80px !important;
+  width: auto !important;
+  flex: 1;
+}
+
+.number-row {
+  padding-right: 4px !important;
+}
+
+.node-result {
+  font-size: 19px !important;
+}
+
+.node-result.output {
+  font-size: 24px !important;
+}
+
+.formula-hint {
+  font-size: var(--text-sm) !important;
+  color: var(--text-2) !important;
+  line-height: 1.5 !important;
+}
+
+.node-row.sep {
+  margin-top: 5px !important;
+  padding-top: 10px !important;
+}
+
+/* ── Resize handle (правий нижній кут) ── */
+.node {
+  position: relative;
+  overflow: visible;
+}
+.node-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 52px;
+  height: 52px;
+  cursor: se-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  font-size: 22px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 20;
+  border-radius: 0 0 var(--radius) 0;
+}
+.node:hover .node-resize-handle {
+  opacity: 1;
+}
+.node-resize-handle:hover {
+  color: var(--blue);
+}
+.node-resize-handle i {
+  pointer-events: none;
+}

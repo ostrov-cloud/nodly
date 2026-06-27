@@ -1,0 +1,83 @@
+/* ═══════════════════════════════════════
+   variables.css — CSS змінні
+   Nodly
+════════════════════════════════════════ */
+
+:root {
+
+  /* ── Кольори фону ── */
+  --bg:         #F7F6F3;
+  --surface:    #FFFFFF;
+  --surface-2:  #F2F1EE;
+  --surface-3:  #ECEAE6;
+
+  /* ── Межі ── */
+  --border:     #E2E0DA;
+  --border-2:   #CCCAC4;
+
+  /* ── Текст ── */
+  --text:       #1A1915;
+  --text-2:     #6B6960;
+  --text-3:     #9B9A94;
+
+  /* ── Акценти ── */
+  --blue:       #2F7FD1;
+  --blue-light: #EBF3FC;
+  --blue-dark:  #2370BD;
+
+  --green:      #179E74;
+  --green-light:#E3F5EE;
+  --green-dark: #0F6E56;
+
+  --amber:      #B87216;
+  --amber-light:#FAF0DC;
+  --amber-dark: #8F5810;
+
+  --red:        #C0392B;
+  --red-light:  #FEF0EE;
+
+  /* ── Типографіка ── */
+  --font:       -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono:  'SF Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
+
+  --text-xs:    11px;
+  --text-sm:    12px;
+  --text-md:    13px;
+  --text-lg:    14px;
+  --text-xl:    16px;
+
+  /* ── Радіуси ── */
+  --radius-sm:  5px;
+  --radius:     9px;
+  --radius-lg:  13px;
+
+  /* ── Тіні ── */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.05), 0 0 0 0.5px rgba(0,0,0,.07);
+  --shadow:     0 2px 8px rgba(0,0,0,.07), 0 0 0 0.5px rgba(0,0,0,.08);
+  --shadow-lg:  0 8px 24px rgba(0,0,0,.10), 0 0 0 0.5px rgba(0,0,0,.08);
+
+  /* ── Анімації ── */
+  --ease:       cubic-bezier(0.16, 1, 0.3, 1);
+  --duration:   150ms;
+
+  /* ── Розміри layout ── */
+  --sidebar-width: min(80vw, 280px);
+  --topbar-h:      48px;
+  --toolbar-h:     44px;
+
+  /* ── Вузли ── */
+  --node-min-w:    160px;
+  --port-size:     13px;
+}
+
+/* ── iPhone SE і схожі (≤ 430px) ── */
+@media (max-width: 430px) {
+  :root {
+    --text-xs:  13px;   /* було 11px */
+    --text-sm:  14px;   /* було 12px */
+    --text-md:  15px;   /* було 13px */
+    --text-lg:  16px;   /* було 14px */
+    --text-xl:  18px;   /* було 16px */
+    --topbar-h: 52px;
+  }
+}

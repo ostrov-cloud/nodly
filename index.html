@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content"/>
+  <meta name="description" content="Nodly — візуальний калькулятор з вузлами"/>
+  <title>Nodly</title>
+
+  <!-- Tabler Icons (локально) -->
+  <link rel="stylesheet" href="libs/tabler-icons.min.css"/>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/reset.css"/>
+  <link rel="stylesheet" href="css/variables.css"/>
+  <link rel="stylesheet" href="css/layout.css"/>
+  <link rel="stylesheet" href="css/menu.css"/>
+  <link rel="stylesheet" href="css/nodes.css"/>
+  <link rel="stylesheet" href="css/modals.css"/>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="icons/favicon.svg"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     САЙДБАР
+════════════════════════════════════════ -->
+<aside id="sidebar">
+
+  <!-- Логотип -->
+  <div id="sidebar-logo">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+      <circle cx="5"  cy="11" r="3.5" stroke="#2F7FD1" stroke-width="1.8"/>
+      <circle cx="17" cy="5"  r="3.5" stroke="#179E74" stroke-width="1.8"/>
+      <circle cx="17" cy="17" r="3.5" stroke="#179E74" stroke-width="1.8"/>
+      <line x1="8.4" y1="9.5"  x2="13.6" y2="6.5"  stroke="#2F7FD1" stroke-width="1.4" stroke-linecap="round"/>
+      <line x1="8.4" y1="12.5" x2="13.6" y2="15.5" stroke="#2F7FD1" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    <span class="logo-text">Nodly</span>
+    <span id="app-version">v5-13</span>
+  </div>
+
+  <!-- Кнопка додати -->
+  <div id="sidebar-top">
+    <button class="btn-primary" id="btn-new-calc" onclick="App.createCalc()">
+      <i class="ti ti-plus" aria-hidden="true"></i>
+      Новий калькулятор
+    </button>
+  </div>
+
+  <!-- Список калькуляторів -->
+  <nav id="calc-list" aria-label="Список калькуляторів">
+    <!-- Заповнюється через JS -->
+  </nav>
+
+  <!-- Нижні дії -->
+  <div id="sidebar-bottom">
+    <button class="btn-sidebar-action" id="btn-import" onclick="Sharing.importJSON()" title="Імпортувати JSON">
+      <i class="ti ti-upload" aria-hidden="true"></i>
+      Імпортувати
+    </button>
+    <button class="btn-sidebar-action" id="btn-export" onclick="Sharing.exportJSON()" title="Експортувати JSON">
+      <i class="ti ti-download" aria-hidden="true"></i>
+      Експортувати
+    </button>
+  </div>
+
+</aside>
+
+<!-- ═══════════════════════════════════════
+     ГОЛОВНА ОБЛАСТЬ
+════════════════════════════════════════ -->
+<main id="main">
+
+  <!-- Екран привітання (коли немає відкритого калькулятора) -->
+  <div id="welcome-screen">
+    <div class="welcome-inner">
+      <svg class="welcome-icon" width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+        <circle cx="14"  cy="28" r="9" stroke="#E2E0DA" stroke-width="2"/>
+        <circle cx="42" cy="14" r="9" stroke="#E2E0DA" stroke-width="2"/>
+        <circle cx="42" cy="42" r="9" stroke="#E2E0DA" stroke-width="2"/>
+        <line x1="22.8" y1="24.5" x2="33.2" y2="17.5" stroke="#E2E0DA" stroke-width="2" stroke-linecap="round"/>
+        <line x1="22.8" y1="31.5" x2="33.2" y2="38.5" stroke="#E2E0DA" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <p class="welcome-title">Обери або створи калькулятор</p>
+      <p class="welcome-sub">Натисни «Новий калькулятор» щоб почати</p>
+    </div>
+  </div>
+
+  <!-- Редактор -->
+  <div id="editor" aria-label="Редактор калькулятора">
+
+    <!-- Верхня панель редактора -->
+    <header id="editor-topbar">
+      <button class="btn-tool btn-back" onclick="App.closeSidebar(false)" title="Назад">←</button>
+      <input
+        id="editor-name"
+        type="text"
+        placeholder="Назва калькулятора"
+        aria-label="Назва калькулятора"
+        oninput="App.saveCalcName(this.value)"
+        autocomplete="off"
+      />
+      <div class="topbar-actions"></div>
+      <button class="btn-tool btn-help" onclick="App.toggleHelp()" title="Довідка" aria-label="Відкрити довідку">
+        <i class="ti ti-question-mark" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <!-- Тулбар вузлів -->
+    <div id="editor-toolbar" role="toolbar" aria-label="Типи вузлів">
+      <button class="btn-node blue"  onclick="App.addNodeFromMenu('number')" title="Додати числовий вузол">
+        <i class="ti ti-123" aria-hidden="true"></i> Число
+      </button>
+      <button class="btn-node blue"  onclick="App.addNodeFromMenu('formula')" title="Додати вузол формули">
+        <i class="ti ti-math-function" aria-hidden="true"></i> Формула
+      </button>
+      <button class="btn-node blue"  onclick="App.addNodeFromMenu('output')" title="Додати вузол результату">
+        <i class="ti ti-flag" aria-hidden="true"></i> Результат
+      </button>
+      <button class="btn-node amber" onclick="App.addNodeFromMenu('note')" title="Додати нотатку">
+        <i class="ti ti-note" aria-hidden="true"></i> Нотатка
+      </button>
+      <div class="toolbar-divider" aria-hidden="true"></div>
+      <span class="toolbar-hint">Зелений порт → синій порт</span>
+    </div>
+
+    <!-- Довідка -->
+    <div id="help-overlay" role="dialog" aria-modal="true" aria-label="Довідка" hidden>
+      <div id="help-modal">
+        <button class="help-close" onclick="App.toggleHelp()" aria-label="Закрити">
+          <i class="ti ti-x"></i>
+        </button>
+        <h2>Довідка Nodly</h2>
+
+        <section>
+          <h3><i class="ti ti-node-tree"></i> Вузли</h3>
+          <p>Будуй ланцюжок: <strong>Число → Формула → Результат</strong></p>
+          <ol>
+            <li>Додай вузол <strong>Число</strong> — введи значення (напр. <code>42</code>).</li>
+            <li>Додай вузол <strong>Формула</strong> — напиши вираз з літерами: <code>a * b + 10</code>.<br>Кожна нова літера автоматично стає синім входом.</li>
+            <li>З'єднай: натисни <span class="help-port out">●</span> зелений вихід числа → <span class="help-port in">●</span> синій вхід формули.</li>
+            <li>Додай вузол <strong>Результат</strong> і підключи до нього вихід формули.</li>
+          </ol>
+          <p class="help-tip">💡 Видалити лінію — просто натисни на неї.</p>
+        </section>
+
+        <section>
+          <h3><i class="ti ti-math-function"></i> Операції у формулі</h3>
+          <table class="help-table">
+            <tr><th>Що</th><th>Синтаксис</th><th>Приклад</th></tr>
+            <tr><td>Додавання</td><td><code>+</code></td><td><code>a + b</code></td></tr>
+            <tr><td>Віднімання</td><td><code>-</code></td><td><code>a - b</code></td></tr>
+            <tr><td>Множення</td><td><code>*</code></td><td><code>a * b</code></td></tr>
+            <tr><td>Ділення</td><td><code>/</code></td><td><code>a / b</code></td></tr>
+            <tr><td>Степінь</td><td><code>**</code></td><td><code>a ** 2</code> → a²</td></tr>
+            <tr><td>Степінь (функція)</td><td><code>pow(x, y)</code></td><td><code>pow(a, 3)</code> → a³</td></tr>
+            <tr><td>Корінь квадратний</td><td><code>sqrt(x)</code></td><td><code>sqrt(a)</code> → √a</td></tr>
+            <tr><td>Залишок від ділення</td><td><code>%</code></td><td><code>a % 3</code></td></tr>
+            <tr><td>Абсолютне значення</td><td><code>abs(x)</code></td><td><code>abs(a - b)</code></td></tr>
+            <tr><td>Заокруглення</td><td><code>round(x)</code></td><td><code>round(a / 3)</code></td></tr>
+            <tr><td>Вниз / вгору</td><td><code>floor(x)</code> / <code>ceil(x)</code></td><td><code>floor(1.9)</code> → 1</td></tr>
+            <tr><td>Мінімум / максимум</td><td><code>min(a,b)</code> / <code>max(a,b)</code></td><td><code>max(a, 0)</code></td></tr>
+            <tr><td>Синус / косинус</td><td><code>sin(x)</code> / <code>cos(x)</code></td><td><code>sin(a)</code></td></tr>
+            <tr><td>Натуральний логарифм</td><td><code>log(x)</code></td><td><code>log(a)</code></td></tr>
+            <tr><td>Експонента</td><td><code>exp(x)</code></td><td><code>exp(a)</code> → eᵃ</td></tr>
+            <tr><td>Число π</td><td><code>pi</code></td><td><code>pi * r ** 2</code></td></tr>
+            <tr><td>Число e</td><td><code>e</code></td><td><code>e ** x</code></td></tr>
+          </table>
+          <p class="help-tip">💡 Змінні можуть бути українськими літерами: <code>ширина * висота</code></p>
+        </section>
+
+        <section>
+          <h3><i class="ti ti-camera"></i> Кнопка фото</h3>
+          <ol>
+            <li>Натисни <i class="ti ti-camera"></i> на ноді — відкривається вікно.</li>
+            <li>Вибери <strong>«Камера»</strong> — знімає фото з камери пристрою.<br>або <strong>«Галерея»</strong> — завантажує зображення з файлів.</li>
+            <li>Після знімку з'являється інструмент <strong>кадрування</strong>: перетягуй і масштабуй — потім «Підтвердити».</li>
+            <li>Фото відображається над нодою і пропорційно змінюється разом з її шириною.</li>
+            <li>Щоб <strong>змінити або видалити</strong> фото — натисни на нього ще раз.</li>
+          </ol>
+        </section>
+      </div>
+    </div>
+
+    <!-- Канвас -->
+    <div id="canvas" role="region" aria-label="Область вузлів">
+      <div id="world"></div>
+      <svg id="svg-layer" aria-hidden="true">
+        <defs>
+          <marker id="arr-green" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0.5 L6,3.5 L0,6.5 Z" fill="#179E74" opacity="0.9"/>
+          </marker>
+          <marker id="arr-blue" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0.5 L6,3.5 L0,6.5 Z" fill="#2F7FD1" opacity="0.9"/>
+          </marker>
+        </defs>
+      </svg>
+      <!-- Вузли додаються сюди через JS -->
+    </div>
+
+    <!-- Floating buttons inside editor -->
+    <button id="btn-fit" onclick="App.toggleFitPanel()" title="Перейти до ноди">
+      <i class="ti ti-focus-centered"></i>
+    </button>
+    <button id="btn-undo" onclick="App.undoAction()" title="Скасувати">
+      <i class="ti ti-arrow-back-up"></i>
+    </button>
+    <button id="btn-add-node" onclick="App.toggleAddMenu()" title="Додати вузол">
+      <i class="ti ti-plus"></i>
+    </button>
+    <button id="btn-save" onclick="App.save()">Зберегти</button>
+
+  </div><!-- /editor -->
+
+  <!-- Панель навігації по нодах -->
+  <div id="fit-overlay" onclick="if(event.target===this)App.closeFitPanel()">
+    <div id="fit-panel">
+      <div class="fit-header">
+        <span class="fit-title"><i class="ti ti-focus-centered"></i> Перейти до...</span>
+        <button class="fit-close" onclick="App.closeFitPanel()"><i class="ti ti-x"></i></button>
+      </div>
+      <div id="fit-list"><!-- заповнюється динамічно --></div>
+    </div>
+  </div>
+
+  <div id="add-node-overlay" onclick="if(event.target===this)App.closeAddMenu()">
+    <div id="add-node-panel">
+      <div class="anp-header">
+        <span class="anp-title">Додати вузол</span>
+        <button class="anp-close" onclick="App.closeAddMenu()"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="anp-grid">
+        <button class="anp-btn anp-number" onclick="App.addNodeFromMenu('number')">
+          <i class="ti ti-123"></i><span>Число</span>
+        </button>
+        <button class="anp-btn anp-formula" onclick="App.addNodeFromMenu('formula')">
+          <i class="ti ti-math-function"></i><span>Формула</span>
+        </button>
+        <button class="anp-btn anp-output" onclick="App.addNodeFromMenu('output')">
+          <i class="ti ti-flag"></i><span>Результат</span>
+        </button>
+        <button class="anp-btn anp-note" onclick="App.addNodeFromMenu('note')">
+          <i class="ti ti-note"></i><span>Нотатка</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════════════════
+     МОДАЛЬНІ ВІКНА
+════════════════════════════════════════ -->
+
+<!-- Модалка: Фото вузла -->
+<div id="modal-photo" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-photo-title" hidden>
+  <div class="modal-backdrop" onclick="Modal.close('modal-photo')"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <span id="modal-photo-title" class="modal-title">Фото вузла</span>
+      <button class="modal-close" onclick="Modal.close('modal-photo')" aria-label="Закрити">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-photo-body">
+      <!-- Якщо фото немає -->
+      <div id="photo-actions" class="photo-actions">
+        <button class="btn-photo-action" id="btn-take-photo" onclick="Camera.openCamera()">
+          <i class="ti ti-camera" aria-hidden="true"></i>
+          <span>Сфотографувати</span>
+        </button>
+        <button class="btn-photo-action" id="btn-pick-photo" onclick="Camera.openGallery()">
+          <i class="ti ti-photo" aria-hidden="true"></i>
+          <span>З галереї</span>
+        </button>
+      </div>
+      <!-- Камера (прихована поки не активна) -->
+      <div id="camera-view" hidden>
+        <video id="camera-video" autoplay playsinline></video>
+        <div class="camera-controls">
+          <button class="cam-btn" onclick="Camera.capture()" title="Зняти фото">
+            <i class="ti ti-camera-filled" aria-hidden="true"></i>
+          </button>
+          <button class="cam-btn cam-btn-danger" onclick="Camera.stopCamera()" title="Скасувати">
+            <i class="ti ti-x" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Прев'ю фото -->
+      <div id="photo-preview" hidden>
+        <img id="photo-preview-img" src="" alt="Фото вузла"/>
+        <div class="photo-preview-actions">
+          <button class="cam-btn" onclick="Camera.openFullPhoto()" title="Відкрити">
+            <i class="ti ti-zoom-in" aria-hidden="true"></i>
+          </button>
+          <button class="cam-btn" onclick="Camera.replacePhoto()" title="Замінити">
+            <i class="ti ti-refresh" aria-hidden="true"></i>
+          </button>
+          <button id="btn-recrop" class="cam-btn" onclick="Camera.recropPhoto()" title="Перекадрувати" hidden>
+            <i class="ti ti-crop" aria-hidden="true"></i>
+          </button>
+          <button class="cam-btn cam-btn-primary" onclick="Camera.savePhoto()" title="Зберегти">
+            <i class="ti ti-device-floppy" aria-hidden="true"></i>
+          </button>
+          <button class="cam-btn cam-btn-danger" onclick="Camera.removePhoto()" title="Видалити">
+            <i class="ti ti-trash" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Прихований canvas для захоплення фото -->
+      <canvas id="camera-canvas" hidden></canvas>
+      <!-- Прихований input для галереї -->
+      <input
+        id="gallery-input"
+        type="file"
+        accept="image/*"
+        hidden
+        onchange="Camera.onGallerySelect(event)"
+      />
+    </div>
+  </div>
+</div>
+
+
+<!-- Модалка: Вибір калькуляторів для експорту -->
+<div id="modal-export-select" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-export-select-title" hidden>
+  <div class="modal-backdrop" onclick="Modal.close('modal-export-select')"></div>
+  <div class="modal-box modal-box-sm">
+    <div class="modal-header">
+      <span id="modal-export-select-title" class="modal-title">Що експортувати?</span>
+      <button class="modal-close" onclick="Modal.close('modal-export-select')" aria-label="Закрити"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="export-select-actions">
+        <button class="btn-secondary" onclick="Sharing.selectAllExport(true)">Вибрати всі</button>
+        <button class="btn-secondary" onclick="Sharing.selectAllExport(false)">Зняти всі</button>
+      </div>
+      <div id="export-calc-list" class="export-calc-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="Modal.close('modal-export-select')">Скасувати</button>
+      <button class="btn-primary" onclick="Sharing.nextExportStep()">Далі</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Модалка: Обрізка фото 1:1 -->
+<div id="modal-crop" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-crop-title" hidden>
+  <div class="modal-backdrop" onclick="Camera.cancelCrop()"></div>
+  <div class="modal-box">
+    <div class="modal-header">
+      <span id="modal-crop-title" class="modal-title">Обрізати фото 1:1</span>
+      <button class="modal-close" onclick="Camera.cancelCrop()" aria-label="Закрити"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="crop-box"><img id="crop-img" alt="Обрізка"/><div id="crop-frame"></div></div>
+      <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1" oninput="Camera.setCropZoom(this.value)" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="Camera.cancelCrop()">Скасувати</button>
+      <button class="btn-primary" onclick="Camera.applyCrop()">Готово</button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка: Експорт JSON -->
+<div id="modal-export" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-export-title" hidden>
+  <div class="modal-backdrop" onclick="Modal.close('modal-export')"></div>
+  <div class="modal-box modal-box-sm">
+    <div class="modal-header">
+      <span id="modal-export-title" class="modal-title">Експортувати JSON</span>
+      <button class="modal-close" onclick="Modal.close('modal-export')" aria-label="Закрити">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc">Оберіть якість фото у файлі:</p>
+      <div class="export-options">
+        <label class="export-option">
+          <input type="radio" name="export-quality" value="original" checked/>
+          <div class="export-option-content">
+            <span class="export-option-title">Оригінал</span>
+            <span class="export-option-desc">Фото без змін, більший файл</span>
+          </div>
+        </label>
+        <label class="export-option">
+          <input type="radio" name="export-quality" value="optimized"/>
+          <div class="export-option-content">
+            <span class="export-option-title">Оптимізовано</span>
+            <span class="export-option-desc">~300 КБ на фото, менший файл</span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="Modal.close('modal-export')">Скасувати</button>
+      <button class="btn-primary" onclick="Sharing.doExport()">
+        <i class="ti ti-download" aria-hidden="true"></i> Зберегти
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Модалка: Підтвердження видалення -->
+<div id="modal-confirm" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-confirm-title" hidden>
+  <div class="modal-backdrop" onclick="Modal.close('modal-confirm')"></div>
+  <div class="modal-box modal-box-sm">
+    <div class="modal-header">
+      <span id="modal-confirm-title" class="modal-title">Видалити калькулятор?</span>
+      <button class="modal-close" onclick="Modal.close('modal-confirm')" aria-label="Закрити">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc" id="modal-confirm-text"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="Modal.close('modal-confirm')">Скасувати</button>
+      <button class="btn-danger" id="modal-confirm-ok">
+        <i class="ti ti-trash" aria-hidden="true"></i> Видалити
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     СКРИПТИ
+════════════════════════════════════════ -->
+<script src="libs/html2canvas.min.js"></script>
+<script src="js/db.js"></script>
+<script src="js/state.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/nodes.js"></script>
+<script src="js/camera.js"></script>
+<script src="js/sharing.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
