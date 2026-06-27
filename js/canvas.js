@@ -340,22 +340,65 @@ const Canvas = (() => {
 
 
 
+  // Пінч-зум: слідкуємо декілька поінтерів
+  const _touches = new Map();
+  let _pinchDist = 0;
+
   canvasEl.addEventListener('pointerdown', (e) => {
     if (e.target !== canvasEl && e.target !== svgEl && !svgEl.contains(e.target)) return;
     if (e.pointerType === 'mouse' && e.button !== 0 && e.button !== 1) return;
-    _panning = { sx: e.clientX, sy: e.clientY, vx: _viewport.x, vy: _viewport.y };
-    canvasEl.style.cursor = 'grabbing';
+
+    _touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (_touches.size >= 2) {
+      // Переходимо в режим пінч
+      _panning = null;
+      const pts = [..._touches.values()];
+      _pinchDist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+      canvasEl.style.cursor = '';
+    } else {
+      _panning = { sx: e.clientX, sy: e.clientY, vx: _viewport.x, vy: _viewport.y };
+      canvasEl.style.cursor = 'grabbing';
+    }
     e.preventDefault();
   });
 
   document.addEventListener('pointermove', (e) => {
+    // Оновлюємо позицію поінтера
+    if (_touches.has(e.pointerId)) {
+      _touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    }
+
+    if (_touches.size >= 2) {
+      // Пінч-зум
+      const pts = [..._touches.values()];
+      const dist = Math.hypot(pts[1].x - pts[0].x, pts[1].y - pts[0].y);
+      if (_pinchDist > 0 && dist > 0) {
+        const factor = dist / _pinchDist;
+        const cx = (pts[0].x + pts[1].x) / 2;
+        const cy = (pts[0].y + pts[1].y) / 2;
+        zoomAt(cx, cy, factor);
+      }
+      _pinchDist = dist;
+      return;
+    }
+
     if (!_panning) return;
     _viewport.x = _panning.vx + e.clientX - _panning.sx;
     _viewport.y = _panning.vy + e.clientY - _panning.sy;
     applyViewport();
   });
 
-  document.addEventListener('pointerup', () => {
+  document.addEventListener('pointerup', (e) => {
+    _touches.delete(e.pointerId);
+    if (_touches.size < 2) _pinchDist = 0;
+    if (!_panning) return;
+    _panning = null;
+    canvasEl.style.cursor = '';
+  });
+  document.addEventListener('pointercancel', (e) => {
+    _touches.delete(e.pointerId);
+    if (_touches.size < 2) _pinchDist = 0;
     if (!_panning) return;
     _panning = null;
     canvasEl.style.cursor = '';
